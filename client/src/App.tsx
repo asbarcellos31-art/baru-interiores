@@ -1,8 +1,9 @@
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/sonner";
 import AppLayout from "./components/AppLayout";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { useAppAuth } from "./contexts/AppAuthContext";
+import Site from "./pages/Site";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Leads from "./pages/Leads";
@@ -17,8 +18,13 @@ import IA from "./pages/IA";
 import Configuracoes from "./pages/Configuracoes";
 import NotFound from "./pages/NotFound";
 
+// Rotas públicas (sem auth)
+const PUBLIC_ROUTES = ["/", "/login"];
+
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, isLoading } = useAppAuth();
+  const [location] = useLocation();
+  if (PUBLIC_ROUTES.includes(location)) return <>{children}</>;
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen" style={{ background: "linear-gradient(135deg, #1c1410 0%, #2a1e14 100%)" }}>
@@ -35,11 +41,10 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function Router() {
+function AppRouter() {
   return (
     <Switch>
-      <Route path="/login" component={Login} />
-      <Route path="/" component={Dashboard} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/leads" component={Leads} />
       <Route path="/clientes" component={Clientes} />
       <Route path="/projetos" component={Projetos} />
@@ -55,15 +60,27 @@ function Router() {
   );
 }
 
+function AppShell() {
+  const [location] = useLocation();
+  const isPublic = location === "/" || location === "/login";
+
+  if (location === "/") return <Site />;
+  if (location === "/login") return <Login />;
+
+  return (
+    <AuthGuard>
+      <AppLayout>
+        <AppRouter />
+      </AppLayout>
+    </AuthGuard>
+  );
+}
+
 export default function App() {
   return (
     <ErrorBoundary>
-      <AuthGuard>
-        <AppLayout>
-          <Router />
-        </AppLayout>
-        <Toaster position="top-right" />
-      </AuthGuard>
+      <AppShell />
+      <Toaster position="top-right" />
     </ErrorBoundary>
   );
 }

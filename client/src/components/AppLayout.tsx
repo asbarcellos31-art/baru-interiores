@@ -17,7 +17,7 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard, modulo: "dashboard" },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, modulo: "dashboard" },
   {
     label: "Clientes",
     icon: Users,
