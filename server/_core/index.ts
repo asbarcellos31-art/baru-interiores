@@ -26,10 +26,6 @@ async function findAvailablePort(startPort = 3000): Promise<number> {
 }
 
 async function startServer() {
-  await garantirAdminPadrao().catch(err => {
-    console.warn("[Boot] Admin padrão:", err?.message || err);
-  });
-
   const db = await getDb();
   if (db) {
     const migrations = [
@@ -392,6 +388,10 @@ async function startServer() {
       }
     }
   }
+
+  await garantirAdminPadrao().catch(err => {
+    console.warn("[Boot] Admin padrão:", err?.message || err);
+  });
 
   const app = express();
   const server = createServer(app);
