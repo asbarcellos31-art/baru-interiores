@@ -13,7 +13,7 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (isLoggedIn) { setLocation("/"); return null; }
+  if (isLoggedIn) { setLocation("/dashboard"); return null; }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ export default function Login() {
     const result = await login(email, senha);
     setLoading(false);
     if (result.ok) {
-      setLocation("/");
+      setLocation("/dashboard");
     } else {
       toast.error(result.error || "Erro ao fazer login");
     }
