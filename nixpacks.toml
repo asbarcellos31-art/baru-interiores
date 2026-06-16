@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs_22", "pnpm-9_x"]
+
+[phases.install]
+cmds = ["npm install -g corepack@latest && corepack enable", "pnpm install --no-frozen-lockfile"]
+
+[phases.build]
+cmds = ["pnpm vite build", "pnpm exec esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist"]
+
+[start]
+cmd = "node dist/index.js"
